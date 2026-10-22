@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Potty readiness quiz</title><style>
+:root{--bg:#F6F3EC;--ink:#1e2b27;--mute:#5d6a65;--green:#176B5A;--line:#e3ddd0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:28px 18px 56px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 10px}
+h1{font-size:31px}h2{font-size:23px}h3{font-size:19px}
+p{margin:0 0 12px}.sub{color:var(--mute)}.fine{font-size:13px;color:var(--mute)}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:20px;margin:16px 0}
+label{display:block;font-weight:600;margin:14px 0 6px}
+select,input{width:100%;font:inherit;padding:13px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.btn{display:inline-block;border:0;border-radius:999px;padding:13px 22px;font:600 16px system-ui,sans-serif;background:var(--green);color:#fff;cursor:pointer;text-decoration:none;text-align:center}
+.btn.full{width:100%;margin-top:18px}.btn.alt{background:#fff;color:var(--green);border:1.5px solid var(--green)}
+:focus-visible{outline:3px solid #d98027;outline-offset:2px}
+.stat{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border:0}.stat span{color:var(--mute)}.stat b{font:600 20px Georgia,serif;text-align:right}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:12px}.bar i{display:block;height:100%;background:var(--green)}
+.opt{display:block;width:100%;text-align:left;font:inherit;padding:15px 16px;margin:10px 0;border:1.5px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;color:var(--ink)}
+.opt:hover{border-color:var(--green)}
+.tips{padding-left:20px;margin:8px 0}.tips li{margin:6px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+.price s{opacity:.6}.price b{font:600 28px Georgia,serif}
+.bun{background:linear-gradient(160deg,#145a4c,#1f8573);color:#fff;border:0}
+.bun .btn{background:#fff;color:#145a4c}
+.tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;margin-bottom:10px}
+.note{font-size:14px;margin:14px 0 0;text-align:center;opacity:.92}
+.also{text-align:center;margin-top:26px;color:var(--mute)}.also a{color:var(--green);font-weight:600}
+</style></head><body><main><h1>Potty readiness quiz</h1><p class="sub">10 quick questions to see if your child is ready to start.</p><div id="app"></div></main><script>
+const L={sleep:"https://momwins.systeme.io/sleep",potty:"https://momwins.systeme.io/potty",tantrums:"https://momwins.systeme.io/tantrums",bundle:"https://momwins.systeme.io/bundle"};
+const G={sleep:["Baby Sleep Fix","Safe, gentle sleep guide for ages 0 to 2 with a 14-night plan and printable toolkit.","#b85c3e"],potty:["Potty Train Your Child","Calm 3-day starter plan plus printables, scripts and caregiver tools.","#176B5A"],tantrums:["Tantrum &amp; Meltdown Fix","The CALM Method for tantrums and meltdowns, plus a printable toolkit.","#d98027"]};
+const T={sleep:["Baby wake window calculator","wake-window-calculator.html"],potty:["Potty readiness quiz","potty-readiness-quiz.html"],tantrums:["Tantrum type quiz","tantrum-type-quiz.html"]};
+function offer(k,lead){const g=G[k];return `<section><h2>${lead}</h2><div class="card" style="border-color:${g[2]}"><h3>${g[0]}</h3><p class="sub">${g[1]}</p><div class="row"><span class="price"><s>$47</s> <b>$17</b></span><a class="btn" style="background:${g[2]}" target="_top" href="${L[k]}">Get It</a></div></div><div class="card bun"><span class="tag">Best value</span><h3>Complete Bundle</h3><p>All 3 guides and toolkits: baby sleep, potty training, tantrums and meltdowns.</p><div class="row"><span class="price"><s>$141</s> <b>$34</b></span><a class="btn" target="_top" href="${L.bundle}">Get the Bundle</a></div><p class="note">Get the 3 for the price of 2. Get 1 free.</p></div></section>`}
+function also(k){return '<p class="also">Also try: '+Object.keys(T).filter(x=>x!==k).map(x=>`<a target="_top" href="${T[x][1]}">${T[x][0]}</a>`).join(" or ")+"</p>"}
+const $=id=>document.getElementById(id);
+
+const Q=[["Does your child stay dry for 2 hours or more at a time?","Stays dry for 2+ hours"],["Are your child’s poops fairly regular and predictable?","Regular, predictable poops"],["Can your child follow simple instructions, like “bring me your shoe”?","Follows simple instructions"],["Can your child walk to the bathroom and sit down on their own?","Walks and sits on their own"],["Can your child pull pants up and down, even if it takes a few tries?","Pulls pants up and down"],["Does your child tell you when they are peeing or pooping, even after the fact?","Tells you about pee and poop"],["Does your child show interest in the toilet or in what others do there?","Shows interest in the toilet"],["Does your child dislike wet or dirty diapers?","Dislikes wet or dirty diapers"],["Is your child about 2 years old or older?","Around 2 years old or older"],["Is the next few weeks calm at home, with no new baby, move or daycare change?","A calm few weeks ahead"]];
+let i=0,y=0,no=[];const app=$("app");
+function show(){app.innerHTML=`<div class="card"><div class="bar"><i style="width:${i/Q.length*100}%"></i></div><p class="sub">Question ${i+1} of ${Q.length}</p><h2>${Q[i][0]}</h2><button class="opt" data-a="1">Yes</button><button class="opt" data-a="0">Not yet</button></div>`}
+function done(){const R=y>=8?["Your child looks ready","Most of the signs are in place. This is a good time to start, and a short, focused attempt usually works best.","Ready to start? Get the 3-day plan."]:y>=5?["Almost ready","Several signs are in place. Start preparing now, and begin when the missing signs show up. A few more weeks may be all it takes.","Get the plan ready for when they are."]:["Not quite yet","Starting now could be frustrating for both of you. Watch for the signs below and take this quiz again in a few weeks.","Want to be ready when they are?"];
+app.innerHTML=`<div class="card"><p class="sub">${y} of ${Q.length} signs</p><h2>${R[0]}</h2><p>${R[1]}</p>`+(no.length?`<h3>Still to come</h3><ul class="tips">${no.map(x=>`<li>${x}</li>`).join("")}</ul>`:"")+`<p class="fine">Readiness varies from child to child. Talk to your pediatrician if you have concerns.</p></div>`+offer("potty",R[2])+also("potty")+`<p style="text-align:center"><button class="btn alt" id="r">Take the quiz again</button></p>`;window.scrollTo(0,0)}
+app.addEventListener("click",e=>{if(e.target.closest("#r")){i=0;y=0;no=[];show();window.scrollTo(0,0);return}const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="1")y++;else no.push(Q[i][1]);i++;i<Q.length?show():done()});
+show();
+</script></body></html>
